@@ -1,3 +1,3 @@
 ﻿namespace GicCinema.Models;
 
-public record Booking(int Number, IReadOnlyList<Seat> Seats);
+public record Booking(string bookingId, int numberOfBookedSeats);

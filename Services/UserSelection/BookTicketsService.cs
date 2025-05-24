@@ -43,9 +43,8 @@ public class BookTicketsService(
         var acceptOrNewSelection = Console.ReadLine();
         if (string.IsNullOrWhiteSpace(acceptOrNewSelection))
         {
-            newBookingId = specificSeatSelectionService.ReserveSeats(numberOfTickets, acceptOrNewSelection);
-        } 
-        newBookingId = defaultSeatSelectionService.ReserveSeats(numberOfTickets);
-        screenService.Show(newBookingId);
+            defaultSeatSelectionService.ConfirmSeats(newBookingId);
+            Console.WriteLine($"Booking id: {newBookingId} confirmed.");
+        }
     }
 }

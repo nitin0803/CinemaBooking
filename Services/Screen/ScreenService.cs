@@ -49,7 +49,7 @@ public class ScreenService(ICinemaService cinemaService) : IScreenService
         return seat switch
         {
             { Status: SeatStatus.Empty } => " . ",
-            { BookingId: var bookingId } when bookingId == currentBookingId => " . ",
+            { BookingId: var bookingId } when (bookingId == currentBookingId) => " o ",
             _ => " # "
         };
     }

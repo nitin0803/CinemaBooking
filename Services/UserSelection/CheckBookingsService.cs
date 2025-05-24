@@ -26,8 +26,8 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
             Console.WriteLine("Entered bookingId is not in correct format, please try again!");
             bookingId = Console.ReadLine();
         }
-        var bookingNumberString = bookingId.Substring(3);
-        var booking = cinemaService.TryGetBooking(Convert.ToInt32(bookingNumberString));
+        
+        var booking = cinemaService.TryGetBooking(bookingId);
         if (booking == null)
         {
             Console.WriteLine($"No booking Found for entered booking id: {bookingId}");

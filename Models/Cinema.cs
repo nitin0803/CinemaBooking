@@ -22,7 +22,7 @@ public class Cinema
 
     public int TotalHallSeats => TotalRows * SeatsPerRow;
 
-    public int TotalBookedSeats => Bookings.SelectMany(b => b.Seats).Count();
+    public int TotalBookedSeats => Bookings.Aggregate(0, (total, booking) => total + booking.numberOfBookedSeats);
     public int AvailableSeats => TotalHallSeats - TotalBookedSeats;
 
     public static Cinema Create(string movie, int rows, int seatsPerRow)
@@ -44,6 +44,12 @@ public class Cinema
 
     public static Cinema GetCinema()
     {
+        if (_instance == null)
+        {
+            Console.WriteLine("Exception occurred as Cinama not available!");
+            throw new Exception("No Cinema Found"); // create exception classes.
+        }
+
         return _instance;
     }
 
@@ -52,13 +58,14 @@ public class Cinema
         var rowLayouts = new List<RowLayOut>();
         for (var currentRow = 0; currentRow < TotalRows; currentRow++)
         {
-            var rowLabel = (char)('A' + (TotalRows-1) - currentRow); // Convert 0 -> 'A', 1 -> 'B', etc.
+            var rowLabel = (char)('A' + (TotalRows - 1) - currentRow); // Convert 0 -> 'A', 1 -> 'B', etc.
 
             var emptySeats = new List<Seat>();
             for (var seatNumber = 1; seatNumber <= SeatsPerRow; seatNumber++)
             {
                 emptySeats.Add(new Seat(rowLabel, seatNumber));
             }
+
             rowLayouts.Add(new RowLayOut(rowLabel, emptySeats));
         }
 
