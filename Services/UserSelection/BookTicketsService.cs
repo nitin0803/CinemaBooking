@@ -39,6 +39,8 @@ public class BookTicketsService(
         ShowScreen(newBookingId);
         
         Console.WriteLine(CinemaUtility.AppMessage.AcceptOrNewSeatSelectionMessage);
+        Console.WriteLine();
+        
         var newSeatPosition = Console.ReadLine();
         if (HasUserAcceptedSeatSelection(newSeatPosition))
         {
@@ -49,7 +51,7 @@ public class BookTicketsService(
         while (!HasUserAcceptedSeatSelection(newSeatPosition))
         {
             seatSelectionService.FreeSeats(newBookingId);
-            while (!CinemaUtility.IsNewSeatPositionValid(cinema.HallLayout.RowLayOuts, newSeatPosition))
+            while (!CinemaUtility.IsNewSeatPositionValid(cinema.HallLayout.RowLayOuts, newSeatPosition!))
             {
                 Console.WriteLine("New seating position is not valid! Please try again:");
                 newSeatPosition = Console.ReadLine();
@@ -64,7 +66,7 @@ public class BookTicketsService(
         ConfirmSeats(newBookingId);
     }
 
-    private bool HasUserAcceptedSeatSelection(string newSeatPosition)
+    private bool HasUserAcceptedSeatSelection(string? newSeatPosition)
     {
         return string.IsNullOrWhiteSpace(newSeatPosition);
     }

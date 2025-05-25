@@ -25,7 +25,7 @@ public class CinemaService : ICinemaService
         {
             return GetCinema().Bookings.SingleOrDefault(b => b.BookingId == bookingId); 
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Console.WriteLine("Exception occurred as duplicate booking entries found in cinema");
             throw;

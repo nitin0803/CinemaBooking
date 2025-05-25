@@ -12,7 +12,8 @@ public class ScreenService(ICinemaService cinemaService) : IScreenService
         var seatsPerRow = cinema.SeatsPerRow;
         
         Console.WriteLine($"Booking id: {currentBookingId}");
-        Console.WriteLine($"Selected seats: ");
+        Console.WriteLine("Selected seats: ");
+        Console.WriteLine();
         
         Console.WriteLine("         S C R E E N                  ");
         var separator = new StringBuilder();

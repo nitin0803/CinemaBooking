@@ -8,6 +8,8 @@ using GicCinema.Services.UserSelection;
 using GicCinema.Utility;
 using Microsoft.Extensions.DependencyInjection;
 
+var serviceProvider = RegisterDependencies();
+
 Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
 var inputString = Console.ReadLine();
 while (!CinemaUtility.IsInputValid(inputString))
@@ -16,15 +18,14 @@ while (!CinemaUtility.IsInputValid(inputString))
     inputString = Console.ReadLine();
 }
 
-var inputArray = inputString.Split(" ");
-var movie = inputArray[0];
+Console.WriteLine();
+
+var inputArray = inputString!.Split(" ");
 var rows = int.Parse(inputArray[1]);
 var seatsPerRow = int.Parse(inputArray[2]);
 
-var serviceProvider = RegisterDependencies();
-
 var cinemaService = serviceProvider.GetRequiredService<ICinemaService>();
-var cinema = cinemaService.CreateCinema(inputArray[0],rows, seatsPerRow);
+var cinema = cinemaService.CreateCinema(inputArray[0], rows, seatsPerRow);
 
 MenuItemOption menuItemOption = MenuItemOption.None;
 while (menuItemOption != MenuItemOption.Exit)
@@ -36,15 +37,16 @@ while (menuItemOption != MenuItemOption.Exit)
     Console.WriteLine("Please enter your selection:");
 
     var menuItemSelection = Console.ReadLine();
-    if(!Enum.TryParse(menuItemSelection, out menuItemOption)
-       || !Enum.GetValues<MenuItemOption>().Contains(menuItemOption))
+    Console.WriteLine();
+    if (!Enum.TryParse(menuItemSelection, out menuItemOption)
+        || !Enum.GetValues<MenuItemOption>().Contains(menuItemOption))
     {
         Console.WriteLine(CinemaUtility.ValidationMessage.InvalidSelection);
         Console.WriteLine();
         menuItemOption = MenuItemOption.None;
         continue;
     }
-    
+
     var userSelectionServices = serviceProvider.GetServices<IUserSelectionService>();
     foreach (var userSelectionService in userSelectionServices)
     {

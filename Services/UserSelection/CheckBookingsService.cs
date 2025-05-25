@@ -26,10 +26,10 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
 
     private void ShowBooking(string bookingId)
     {
-        while (!Regex.IsMatch(bookingId, BookingIdPattern))
+        while (string.IsNullOrWhiteSpace(bookingId) || !Regex.IsMatch(bookingId, BookingIdPattern))
         {
             Console.WriteLine("Entered bookingId is not in correct format, please try again!");
-            bookingId = Console.ReadLine();
+            bookingId = Console.ReadLine() ?? string.Empty;
         }
         
         var booking = cinemaService.TryGetBooking(bookingId);
