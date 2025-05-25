@@ -2,8 +2,8 @@
 
 public class Cinema
 {
-    private static readonly object _lockObject = new();
-    private static Cinema _instance;
+    private static readonly object LockObject = new();
+    private static Cinema? _instance;
 
     private Cinema(string movie, int totalRows, int seatsPerRow)
     {
@@ -15,42 +15,30 @@ public class Cinema
     }
 
     public string Movie { get; }
-    public int TotalRows { get; }
+    private int TotalRows { get; }
     public int SeatsPerRow { get; }
     public HallLayout HallLayout { get; }
     public List<Booking> Bookings { get; }
-
-    public int TotalHallSeats => TotalRows * SeatsPerRow;
-
-    public int TotalBookedSeats => Bookings.Aggregate(0, (total, booking) => total + booking.numberOfBookedSeats);
     public int AvailableSeats => TotalHallSeats - TotalBookedSeats;
+    
+    private int TotalHallSeats => TotalRows * SeatsPerRow;
+    private int TotalBookedSeats => Bookings.Aggregate(0, (total, booking) => total + booking.NumberOfBookedSeats);
 
     public static Cinema Create(string movie, int rows, int seatsPerRow)
     {
-        if (_instance == null)
+        lock (LockObject)
         {
-            lock (_lockObject)
-            {
-                if (_instance == null)
-                {
-                    _instance = new Cinema(movie, rows, seatsPerRow);
-                    return _instance;
-                }
-            }
+            if (_instance != null) return _instance;
+            _instance = new Cinema(movie, rows, seatsPerRow);
+            return _instance;
         }
-
-        return _instance;
     }
 
     public static Cinema GetCinema()
     {
-        if (_instance == null)
-        {
-            Console.WriteLine("Exception occurred as no Cinema available!");
-            throw new Exception("No Cinema Found"); // create exception classes.
-        }
-
-        return _instance;
+        if (_instance != null) return _instance;
+        Console.WriteLine("Exception occurred as no Cinema available!");
+        throw new Exception("No Cinema Found");
     }
 
     private HallLayout CreateHallLayout()
@@ -63,7 +51,7 @@ public class Cinema
             var emptySeats = new List<Seat>();
             for (var seatNumber = 1; seatNumber <= SeatsPerRow; seatNumber++)
             {
-                emptySeats.Add(new Seat(rowLabel, seatNumber));
+                emptySeats.Add(new Seat(seatNumber));
             }
 
             rowLayouts.Add(new RowLayOut(rowLabel, emptySeats));

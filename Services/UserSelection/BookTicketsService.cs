@@ -2,14 +2,12 @@
 using GicCinema.Services.Screen;
 using GicCinema.Services.SeatSelection;
 using GicCinema.Utility;
-using GicCinema.Validator;
 
 namespace GicCinema.Services.UserSelection;
 
 public class BookTicketsService(
     ICinemaService cinemaService,
-    IDefaultSeatSelectionService defaultSeatSelectionService,
-    ISpecificSeatSelectionService specificSeatSelectionService,
+    ISeatSelectionService seatSelectionService,
     IScreenService screenService) : IUserSelectionService
 {
     private static bool IsResponsible(MenuItemOption menuItemOption) => menuItemOption == MenuItemOption.BookTickets;
@@ -34,8 +32,9 @@ public class BookTicketsService(
             return;
         }
 
-        var newBookingId = defaultSeatSelectionService.ReserveSeats(numberOfTickets);
+        var newBookingId = seatSelectionService.ReserveSeats(numberOfTickets);
 
+        Console.WriteLine();
         Console.WriteLine($"Successfully reserved {numberOfTickets} {cinema.Movie} tickets.");
         ShowScreen(newBookingId);
         
@@ -49,14 +48,14 @@ public class BookTicketsService(
 
         while (!HasUserAcceptedSeatSelection(newSeatPosition))
         {
-            defaultSeatSelectionService.FreeSeats(newBookingId);
-            while (!InputValidator.IsNewSeatPositionValid(cinema.HallLayout.RowLayOuts, newSeatPosition))
+            seatSelectionService.FreeSeats(newBookingId);
+            while (!CinemaUtility.IsNewSeatPositionValid(cinema.HallLayout.RowLayOuts, newSeatPosition))
             {
                 Console.WriteLine("New seating position is not valid! Please try again:");
                 newSeatPosition = Console.ReadLine();
             }
 
-            newBookingId = defaultSeatSelectionService.ReserveSeats(numberOfTickets, newSeatPosition);
+            newBookingId = seatSelectionService.ReserveSeats(numberOfTickets, newSeatPosition);
             ShowScreen(newBookingId);
             
             Console.WriteLine(CinemaUtility.AppMessage.AcceptOrNewSeatSelectionMessage);
@@ -72,15 +71,13 @@ public class BookTicketsService(
 
     private void ConfirmSeats(string newBookingId)
     {
-        defaultSeatSelectionService.ConfirmSeats(newBookingId);
+        seatSelectionService.ConfirmSeats(newBookingId);
         Console.WriteLine($"Booking id: {newBookingId} confirmed.");
         Console.WriteLine();
     }
 
     private void ShowScreen(string newBookingId)
     {
-        Console.WriteLine($"Booking id: {newBookingId}");
-        Console.WriteLine("Selected seats: ");
         screenService.Show(newBookingId);
         Console.WriteLine();
     }

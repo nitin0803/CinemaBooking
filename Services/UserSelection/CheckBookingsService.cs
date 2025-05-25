@@ -13,8 +13,13 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
         if (!IsResponsible(menuItemOption)) return;
         Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
         var bookingId = Console.ReadLine();
-        if(string.IsNullOrWhiteSpace(bookingId)) return;
-        ShowBooking(bookingId);
+        while (!string.IsNullOrWhiteSpace(bookingId))
+        {
+            ShowBooking(bookingId);
+            Console.WriteLine();
+            Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
+            bookingId = Console.ReadLine();
+        }
     }
 
     private static bool IsResponsible(MenuItemOption menuItemOption) => menuItemOption == MenuItemOption.CheckBookings;

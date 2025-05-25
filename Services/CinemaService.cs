@@ -23,7 +23,7 @@ public class CinemaService : ICinemaService
     {
         try
         {
-            return GetCinema().Bookings.SingleOrDefault(b => b.bookingId == bookingId); 
+            return GetCinema().Bookings.SingleOrDefault(b => b.BookingId == bookingId); 
         }
         catch (Exception e)
         {

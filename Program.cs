@@ -6,12 +6,11 @@ using GicCinema.Services.Screen;
 using GicCinema.Services.SeatSelection;
 using GicCinema.Services.UserSelection;
 using GicCinema.Utility;
-using GicCinema.Validator;
 using Microsoft.Extensions.DependencyInjection;
 
 Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
 var inputString = Console.ReadLine();
-while (!InputValidator.IsInputValid(inputString))
+while (!CinemaUtility.IsInputValid(inputString))
 {
     Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
     inputString = Console.ReadLine();
@@ -27,7 +26,7 @@ var serviceProvider = RegisterDependencies();
 var cinemaService = serviceProvider.GetRequiredService<ICinemaService>();
 var cinema = cinemaService.CreateCinema(inputArray[0],rows, seatsPerRow);
 
-var menuItemOption = MenuItemOption.None;
+MenuItemOption menuItemOption = MenuItemOption.None;
 while (menuItemOption != MenuItemOption.Exit)
 {
     Console.WriteLine(CinemaUtility.AppMessage.WelcomeMessage);
@@ -35,8 +34,16 @@ while (menuItemOption != MenuItemOption.Exit)
     Console.WriteLine("[2] Check bookings");
     Console.WriteLine("[3] Exit");
     Console.WriteLine("Please enter your selection:");
-    var isMenuItemOptionValid = Enum.TryParse(Console.ReadLine(), out menuItemOption); //TODO
-    menuItemOption = isMenuItemOptionValid ? menuItemOption : MenuItemOption.None;
+
+    var menuItemSelection = Console.ReadLine();
+    if(!Enum.TryParse(menuItemSelection, out menuItemOption)
+       || !Enum.GetValues<MenuItemOption>().Contains(menuItemOption))
+    {
+        Console.WriteLine(CinemaUtility.ValidationMessage.InvalidSelection);
+        Console.WriteLine();
+        menuItemOption = MenuItemOption.None;
+        continue;
+    }
     
     var userSelectionServices = serviceProvider.GetServices<IUserSelectionService>();
     foreach (var userSelectionService in userSelectionServices)
@@ -49,11 +56,10 @@ ServiceProvider RegisterDependencies()
 {
     var buildServiceProvider = new ServiceCollection()
         .AddSingleton<ICinemaService, CinemaService>()
-        .AddTransient<IDefaultSeatSelectionService, DefaultSeatSelectionService>()
-        .AddTransient<ISpecificSeatSelectionService, SpecificSpecificSeatSelectionService>()
         .AddTransient<IUserSelectionService, BookTicketsService>()
         .AddTransient<IUserSelectionService, CheckBookingsService>()
         .AddTransient<IUserSelectionService, ExitService>()
+        .AddTransient<ISeatSelectionService, SeatSelectionService>()
         .AddTransient<IScreenService, ScreenService>()
         .BuildServiceProvider();
     return buildServiceProvider;

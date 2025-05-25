@@ -31,7 +31,7 @@ public class ScreenService(ICinemaService cinemaService) : IScreenService
                 var seatSymbol = GetSeatSymbol(seat, currentBookingId);
                 Console.Write(seatSymbol);
             }
-            Console.WriteLine(); // New line after each row
+            Console.WriteLine();
         }
         var seatNumber = new StringBuilder();
         var anyRowLayout = rowLayOuts.First();
@@ -40,7 +40,7 @@ public class ScreenService(ICinemaService cinemaService) : IScreenService
             seatNumber.Append(seat.SeatNumber + "  ");
         }
         Console.Write("   " + seatNumber);
-        Console.WriteLine(); // New line after each row
+        Console.WriteLine();
     }
 
     private static string GetSeatSymbol(Seat seat, string currentBookingId)
