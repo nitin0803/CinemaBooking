@@ -11,7 +11,7 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
     public void Handle(Enums.MenuItemOption menuItemOption)
     {
         if (!IsResponsible(menuItemOption)) return;
-        Console.WriteLine(AppMessages.BookingIdMessage + AppMessages.BlankMessage);
+        Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
         var bookingId = Console.ReadLine();
         if(string.IsNullOrWhiteSpace(bookingId)) return;
         ShowBooking(bookingId);

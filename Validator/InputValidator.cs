@@ -1,4 +1,8 @@
-﻿namespace GicCinema.Validator;
+﻿using System.Text.RegularExpressions;
+using GicCinema.Models;
+using GicCinema.Utility;
+
+namespace GicCinema.Validator;
 
 public static class InputValidator
 {
@@ -29,6 +33,22 @@ public static class InputValidator
 
         if (!AreSeatsPerRowValid(inputArray)) return false;
 
+        return true;
+    }
+
+    public static bool IsNewSeatPositionValid(IReadOnlyList<RowLayOut> rowLayouts, string newSeatPosition)
+    {
+        const string startSeatPositionPattern = @"^[A-Za-z]\d+$";
+        if (!Regex.IsMatch(newSeatPosition, newSeatPosition)) return false;
+        
+        var newSeatPositionRowLabel = CinemaUtility.GetNewSeatPositionRowLabel(newSeatPosition);
+        
+        var allLabels = rowLayouts.Select(r => r.RowLabel).ToList();
+        if (!allLabels.Contains(newSeatPositionRowLabel)) return false;
+        
+        var newSeatPositionNumber = CinemaUtility.GetNewSeatPositionNumber(newSeatPosition);
+        var allSeatNumbersInRow = rowLayouts.First().Seats.Select(s => s.SeatNumber).ToList();
+        if (!allSeatNumbersInRow.Contains(newSeatPositionNumber)) return false;
         return true;
     }
 

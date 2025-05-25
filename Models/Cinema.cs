@@ -56,9 +56,9 @@ public class Cinema
     private HallLayout CreateHallLayout()
     {
         var rowLayouts = new List<RowLayOut>();
-        for (var currentRow = 0; currentRow < TotalRows; currentRow++)
+        for (var i = 0; i < TotalRows; i++)
         {
-            var rowLabel = (char)('A' + (TotalRows - 1) - currentRow); // Convert 0 -> 'A', 1 -> 'B', etc.
+            var rowLabel = (char)('A' + (TotalRows - 1) - i); // Convert 0 -> 'A', 1 -> 'B', etc.
 
             var emptySeats = new List<Seat>();
             for (var seatNumber = 1; seatNumber <= SeatsPerRow; seatNumber++)

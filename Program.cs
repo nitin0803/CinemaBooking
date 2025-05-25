@@ -9,11 +9,11 @@ using GicCinema.Utility;
 using GicCinema.Validator;
 using Microsoft.Extensions.DependencyInjection;
 
-Console.WriteLine(AppMessages.DefineCinema);
+Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
 var inputString = Console.ReadLine();
 while (!InputValidator.IsInputValid(inputString))
 {
-    Console.WriteLine(AppMessages.DefineCinema);
+    Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
     inputString = Console.ReadLine();
 }
 
@@ -30,7 +30,7 @@ var cinema = cinemaService.CreateCinema(inputArray[0],rows, seatsPerRow);
 var menuItemOption = MenuItemOption.None;
 while (menuItemOption != MenuItemOption.Exit)
 {
-    Console.WriteLine(AppMessages.WelcomeMessage);
+    Console.WriteLine(CinemaUtility.AppMessage.WelcomeMessage);
     Console.WriteLine($"[1] Book tickets for {cinema.Movie} ({cinemaService.GetCinema().AvailableSeats} seats available)");
     Console.WriteLine("[2] Check bookings");
     Console.WriteLine("[3] Exit");
