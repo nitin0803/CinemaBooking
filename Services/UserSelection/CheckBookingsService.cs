@@ -13,12 +13,14 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
         if (!IsResponsible(menuItemOption)) return;
         Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
         var bookingId = Console.ReadLine();
+        Console.WriteLine();
         while (!string.IsNullOrWhiteSpace(bookingId))
         {
             ShowBooking(bookingId);
             Console.WriteLine();
             Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
             bookingId = Console.ReadLine();
+            Console.WriteLine();
         }
     }
 
@@ -30,6 +32,7 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
         {
             Console.WriteLine("Entered bookingId is not in correct format, please try again!");
             bookingId = Console.ReadLine() ?? string.Empty;
+            Console.WriteLine();
         }
         
         var booking = cinemaService.TryGetBooking(bookingId);

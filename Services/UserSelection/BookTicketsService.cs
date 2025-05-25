@@ -19,6 +19,7 @@ public class BookTicketsService(
         Console.WriteLine(CinemaUtility.AppMessage.NumberOfTickets + CinemaUtility.AppMessage.BlankMessage);
         
         var inputString = Console.ReadLine();
+        Console.WriteLine();
         if (string.IsNullOrWhiteSpace(inputString)) return;
         
         var numberOfTickets = Convert.ToInt32(inputString);
@@ -33,21 +34,19 @@ public class BookTicketsService(
         }
 
         var newBookingId = seatSelectionService.ReserveSeats(numberOfTickets);
-
-        Console.WriteLine();
         Console.WriteLine($"Successfully reserved {numberOfTickets} {cinema.Movie} tickets.");
         ShowScreen(newBookingId);
         
         Console.WriteLine(CinemaUtility.AppMessage.AcceptOrNewSeatSelectionMessage);
-        Console.WriteLine();
         
         var newSeatPosition = Console.ReadLine();
+        Console.WriteLine();
         if (HasUserAcceptedSeatSelection(newSeatPosition))
         {
             ConfirmSeats(newBookingId);
             return;
         }
-
+        
         while (!HasUserAcceptedSeatSelection(newSeatPosition))
         {
             seatSelectionService.FreeSeats(newBookingId);
@@ -55,6 +54,7 @@ public class BookTicketsService(
             {
                 Console.WriteLine("New seating position is not valid! Please try again:");
                 newSeatPosition = Console.ReadLine();
+                Console.WriteLine();
             }
 
             newBookingId = seatSelectionService.ReserveSeats(numberOfTickets, newSeatPosition);
@@ -62,7 +62,9 @@ public class BookTicketsService(
             
             Console.WriteLine(CinemaUtility.AppMessage.AcceptOrNewSeatSelectionMessage);
             newSeatPosition = Console.ReadLine();
+            Console.WriteLine();
         }
+        
         ConfirmSeats(newBookingId);
     }
 
