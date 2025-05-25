@@ -7,24 +7,6 @@ namespace GicCinema.Services.SeatSelection;
 public class DefaultSeatSelectionService(ICinemaService cinemaService)
     : IDefaultSeatSelectionService
 {
-    public void ConfirmSeats(string newBookingId)
-    {
-        var cinema = cinemaService.GetCinema();
-        var hallLayOut = cinema.HallLayout;
-        var reserveSeats = hallLayOut.RowLayOuts.SelectMany(r => r.Seats)
-            .Where(s => s.Status == SeatStatus.Reserved)
-            .ToList();
-        foreach (var reserveSeat in reserveSeats)
-        {
-            reserveSeat.Update(SeatStatus.Confirmed, newBookingId);
-        }
-
-        var numberOfConfirmedSeats = hallLayOut.RowLayOuts
-            .SelectMany(r => r.Seats)
-            .Count(s => s.Status == SeatStatus.Confirmed);
-        cinemaService.AddBooking(new Booking(newBookingId, numberOfConfirmedSeats));
-    }
-
     public string ReserveSeats(int numberOfTickets, string? newSeatPosition)
     {
         var cinema = cinemaService.GetCinema();
@@ -70,6 +52,39 @@ public class DefaultSeatSelectionService(ICinemaService cinemaService)
         }
     }
 
+    public void ConfirmSeats(string newBookingId)
+    {
+        var cinema = cinemaService.GetCinema();
+        var hallLayOut = cinema.HallLayout;
+        var reserveSeats = hallLayOut.RowLayOuts
+            .SelectMany(r => r.Seats)
+            .Where(s => string.Equals(s.BookingId, newBookingId) && s.Status == SeatStatus.Reserved)
+            .ToList();
+        foreach (var reserveSeat in reserveSeats)
+        {
+            reserveSeat.Update(SeatStatus.Confirmed, newBookingId);
+        }
+
+        var numberOfConfirmedSeats = hallLayOut.RowLayOuts
+            .SelectMany(r => r.Seats)
+            .Count(s => string.Equals(s.BookingId, newBookingId) && s.Status == SeatStatus.Confirmed);
+        cinemaService.AddBooking(new Booking(newBookingId, numberOfConfirmedSeats));
+    }
+    
+    public void FreeSeats(string newBookingId)
+    {
+        var cinema = cinemaService.GetCinema();
+        var hallLayOut = cinema.HallLayout;
+        var reserveSeats = hallLayOut.RowLayOuts.SelectMany(r => r.Seats)
+            .Where(s => s.Status == SeatStatus.Reserved)
+            .ToList();
+        foreach (var reserveSeat in reserveSeats)
+        {
+            reserveSeat.Update(SeatStatus.Empty, newBookingId);
+        }
+    }
+
+    
     private int ReserveSeatsFromMiddle(
         string newBookingId,
         int numberOfTickets,
@@ -81,28 +96,31 @@ public class DefaultSeatSelectionService(ICinemaService cinemaService)
         var middleSeatNumber = GetMiddleSeatNumber(seatsPerRow, numberOfTickets);
         var firstSeatToReserve = GetSeatToReserve(middleSeatNumber);
 
+        if (firstSeatToReserve == null)
+        {
+            firstSeatToReserve = GetSeatToReserve(middleSeatNumber, DirectionSide.Left);
+        }
+
         if (firstSeatToReserve == null) return totalFilledSeats;
 
         ReserveSeat(firstSeatToReserve);
         var rightSeatToReserve = firstSeatToReserve;
         var leftSeatToReserve = firstSeatToReserve;
-        for (int i = 1; i <= seatsPerRow; i++)
+        for (var i = 1; i <= seatsPerRow; i++)
         {
             if (totalFilledSeats == numberOfTickets || numberOfSeatsFilledInCurrentRow == seatsPerRow) break;
 
-            rightSeatToReserve = GetSeatToReserve(rightSeatToReserve.SeatNumber);
-
-            if (rightSeatToReserve == null) break;
-
-            ReserveSeat(rightSeatToReserve);
+            if (rightSeatToReserve != null)
+            {
+                rightSeatToReserve = GetSeatToReserve(rightSeatToReserve.SeatNumber);
+                if (rightSeatToReserve != null) ReserveSeat(rightSeatToReserve);
+            }
 
             if (totalFilledSeats == numberOfTickets || numberOfSeatsFilledInCurrentRow == seatsPerRow) break;
 
+            if (leftSeatToReserve == null) continue;
             leftSeatToReserve = GetSeatToReserve(leftSeatToReserve.SeatNumber, DirectionSide.Left);
-
-            if (leftSeatToReserve == null) break;
-
-            ReserveSeat(leftSeatToReserve);
+            if (leftSeatToReserve != null) ReserveSeat(leftSeatToReserve);
         }
 
         return totalFilledSeats;
@@ -159,22 +177,24 @@ public class DefaultSeatSelectionService(ICinemaService cinemaService)
         
         var seatsToFillCount = seatsToFill.Count;
         var numberOfSeatsFilledInCurrentRow = 0;
+        
         var firstSeatToReserve = GetSeatToReserve(newSeatPositionNumber);
 
         if (firstSeatToReserve == null) return totalFilledSeats;
 
         ReserveSeat(firstSeatToReserve);
         
-        var rightSeatToReserve = firstSeatToReserve;
+        var nextRightSeatToReserve = firstSeatToReserve;
         for (int i = 1; i <= seatsToFillCount; i++)
         {
             if (totalFilledSeats == numberOfTickets || numberOfSeatsFilledInCurrentRow == seatsToFillCount) break;
 
-            rightSeatToReserve = GetSeatToReserve(rightSeatToReserve.SeatNumber);
+            var nextRightSeatNumber = nextRightSeatToReserve.SeatNumber + 1;
+            nextRightSeatToReserve = GetSeatToReserve(nextRightSeatNumber);
 
-            if (rightSeatToReserve == null) break;
+            if (nextRightSeatToReserve == null) break;
 
-            ReserveSeat(rightSeatToReserve);
+            ReserveSeat(nextRightSeatToReserve);
         }
 
         return totalFilledSeats;

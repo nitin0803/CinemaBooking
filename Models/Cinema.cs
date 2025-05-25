@@ -46,7 +46,7 @@ public class Cinema
     {
         if (_instance == null)
         {
-            Console.WriteLine("Exception occurred as Cinama not available!");
+            Console.WriteLine("Exception occurred as no Cinema available!");
             throw new Exception("No Cinema Found"); // create exception classes.
         }
 

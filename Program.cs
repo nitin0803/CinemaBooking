@@ -31,7 +31,7 @@ var menuItemOption = MenuItemOption.None;
 while (menuItemOption != MenuItemOption.Exit)
 {
     Console.WriteLine(CinemaUtility.AppMessage.WelcomeMessage);
-    Console.WriteLine($"[1] Book tickets for {cinema.Movie} ({cinemaService.GetCinema().AvailableSeats} seats available)");
+    Console.WriteLine($"[1] Book tickets for {cinema.Movie} ({cinema.AvailableSeats} seats available)");
     Console.WriteLine("[2] Check bookings");
     Console.WriteLine("[3] Exit");
     Console.WriteLine("Please enter your selection:");
@@ -43,7 +43,6 @@ while (menuItemOption != MenuItemOption.Exit)
     {
         userSelectionService.Handle(menuItemOption);
     }
-    
 }
 
 ServiceProvider RegisterDependencies()

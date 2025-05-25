@@ -30,6 +30,7 @@ public class BookTicketsService(
         if (numberOfTickets > availableSeats)
         {
             Console.WriteLine($"Sorry, there are only {availableSeats} seats available");
+            Console.WriteLine();
             return;
         }
 
@@ -40,14 +41,15 @@ public class BookTicketsService(
         
         Console.WriteLine(CinemaUtility.AppMessage.AcceptOrNewSeatSelectionMessage);
         var newSeatPosition = Console.ReadLine();
-        if (IsUserAcceptedSeatSelection(newSeatPosition))
+        if (HasUserAcceptedSeatSelection(newSeatPosition))
         {
             ConfirmSeats(newBookingId);
             return;
         }
 
-        while (!IsUserAcceptedSeatSelection(newSeatPosition))
+        while (!HasUserAcceptedSeatSelection(newSeatPosition))
         {
+            defaultSeatSelectionService.FreeSeats(newBookingId);
             while (!InputValidator.IsNewSeatPositionValid(cinema.HallLayout.RowLayOuts, newSeatPosition))
             {
                 Console.WriteLine("New seating position is not valid! Please try again:");
@@ -56,13 +58,14 @@ public class BookTicketsService(
 
             newBookingId = defaultSeatSelectionService.ReserveSeats(numberOfTickets, newSeatPosition);
             ShowScreen(newBookingId);
+            
             Console.WriteLine(CinemaUtility.AppMessage.AcceptOrNewSeatSelectionMessage);
             newSeatPosition = Console.ReadLine();
         }
         ConfirmSeats(newBookingId);
     }
 
-    private bool IsUserAcceptedSeatSelection(string newSeatPosition)
+    private bool HasUserAcceptedSeatSelection(string newSeatPosition)
     {
         return string.IsNullOrWhiteSpace(newSeatPosition);
     }
@@ -71,6 +74,7 @@ public class BookTicketsService(
     {
         defaultSeatSelectionService.ConfirmSeats(newBookingId);
         Console.WriteLine($"Booking id: {newBookingId} confirmed.");
+        Console.WriteLine();
     }
 
     private void ShowScreen(string newBookingId)
@@ -78,5 +82,6 @@ public class BookTicketsService(
         Console.WriteLine($"Booking id: {newBookingId}");
         Console.WriteLine("Selected seats: ");
         screenService.Show(newBookingId);
+        Console.WriteLine();
     }
 }

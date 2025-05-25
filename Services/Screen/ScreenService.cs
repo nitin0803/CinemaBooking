@@ -9,7 +9,6 @@ public class ScreenService(ICinemaService cinemaService) : IScreenService
     public void Show(string currentBookingId)
     {
         var cinema = cinemaService.GetCinema();
-        var totalRows = cinema.TotalRows;
         var seatsPerRow = cinema.SeatsPerRow;
         
         Console.WriteLine($"Booking id: {currentBookingId}");

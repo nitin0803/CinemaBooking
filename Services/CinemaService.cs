@@ -16,26 +16,18 @@ public class CinemaService : ICinemaService
 
     public void AddBooking(Booking booking)
     {
-        var cinema = Cinema.GetCinema();
-        if (cinema == null)
-        {
-            Console.WriteLine("Cannot add booking booking as no cinama available!");
-            throw new Exception("No Cinema Found"); // create exception classes.
-        }
-        
-        cinema.Bookings.Add(booking);
+        GetCinema().Bookings.Add(booking);
     }
 
     public Booking? TryGetBooking(string bookingId)
     {
-        var cinema = Cinema.GetCinema();
         try
         {
-            return cinema.Bookings.SingleOrDefault(b => b.bookingId == bookingId); 
+            return GetCinema().Bookings.SingleOrDefault(b => b.bookingId == bookingId); 
         }
         catch (Exception e)
         {
-            Console.WriteLine("Exception occurred as no or duplicate booking entries found in cinema");
+            Console.WriteLine("Exception occurred as duplicate booking entries found in cinema");
             throw;
         }
     }

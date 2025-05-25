@@ -9,6 +9,7 @@ public class ExitService : IUserSelectionService
     {
         if (!IsResponsible(menuItemOption)) return;
         Console.WriteLine(CinemaUtility.AppMessage.ThankYouMessage);
+        Console.WriteLine();
     }
 
     private static bool IsResponsible(MenuItemOption menuItemOption) => menuItemOption == MenuItemOption.Exit;

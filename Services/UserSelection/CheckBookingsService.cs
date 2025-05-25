@@ -8,7 +8,7 @@ namespace GicCinema.Services.UserSelection;
 public class CheckBookingsService(ICinemaService cinemaService, IScreenService screenService) : IUserSelectionService
 {
     private const string BookingIdPattern = @"^GIC\d{4}$";
-    public void Handle(Enums.MenuItemOption menuItemOption)
+    public void Handle(MenuItemOption menuItemOption)
     {
         if (!IsResponsible(menuItemOption)) return;
         Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
@@ -31,6 +31,7 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
         if (booking == null)
         {
             Console.WriteLine($"No booking Found for entered booking id: {bookingId}");
+            return;
         }
         screenService.Show(bookingId);
     }
