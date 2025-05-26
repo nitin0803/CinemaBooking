@@ -8,17 +8,18 @@ namespace GicCinema.Services.UserSelection;
 public class CheckBookingsService(ICinemaService cinemaService, IScreenService screenService) : IUserSelectionService
 {
     private const string BookingIdPattern = @"^GIC\d{4}$";
+
     public void Handle(MenuItemOption menuItemOption)
     {
         if (!IsResponsible(menuItemOption)) return;
-        Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
+        Console.WriteLine(CinemaUtility.AppMessage.BookingId + CinemaUtility.AppMessage.Blank);
         var bookingId = Console.ReadLine();
         Console.WriteLine();
         while (!string.IsNullOrWhiteSpace(bookingId))
         {
             ShowBooking(bookingId);
             Console.WriteLine();
-            Console.WriteLine(CinemaUtility.AppMessage.BookingIdMessage + CinemaUtility.AppMessage.BlankMessage);
+            Console.WriteLine(CinemaUtility.AppMessage.BookingId + CinemaUtility.AppMessage.Blank);
             bookingId = Console.ReadLine();
             Console.WriteLine();
         }
@@ -30,17 +31,18 @@ public class CheckBookingsService(ICinemaService cinemaService, IScreenService s
     {
         while (string.IsNullOrWhiteSpace(bookingId) || !Regex.IsMatch(bookingId, BookingIdPattern))
         {
-            Console.WriteLine("Entered bookingId is not in correct format, please try again!");
+            Console.WriteLine(CinemaUtility.ValidationMessage.InvalidBookingIdFormat);
             bookingId = Console.ReadLine() ?? string.Empty;
             Console.WriteLine();
         }
-        
+
         var booking = cinemaService.TryGetBooking(bookingId);
         if (booking == null)
         {
-            Console.WriteLine($"No booking Found for entered booking id: {bookingId}");
+            Console.WriteLine(CinemaUtility.AppMessage.NoBookingFound, bookingId);
             return;
         }
+
         screenService.Show(bookingId);
     }
 }

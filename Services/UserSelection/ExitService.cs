@@ -8,7 +8,7 @@ public class ExitService : IUserSelectionService
     public void Handle(MenuItemOption menuItemOption)
     {
         if (!IsResponsible(menuItemOption)) return;
-        Console.WriteLine(CinemaUtility.AppMessage.ThankYouMessage);
+        Console.WriteLine(CinemaUtility.AppMessage.ThankYou);
         Console.WriteLine();
     }
 

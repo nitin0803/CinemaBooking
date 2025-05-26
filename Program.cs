@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using GicCinema.Enums;
+﻿using GicCinema.Enums;
 using GicCinema.Services;
 using GicCinema.Services.Screen;
 using GicCinema.Services.SeatSelection;
@@ -11,14 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 var serviceProvider = RegisterDependencies();
 
 Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
+
 var inputString = Console.ReadLine();
-while (!CinemaUtility.IsInputValid(inputString))
+Console.WriteLine();
+
+while (!CinemaUtility.AreCinemaDetailsValid(inputString))
 {
     Console.WriteLine(CinemaUtility.AppMessage.DefineCinema);
     inputString = Console.ReadLine();
+    Console.WriteLine();
 }
-
-Console.WriteLine();
 
 var inputArray = inputString!.Split(" ");
 var rows = int.Parse(inputArray[1]);
@@ -30,14 +30,15 @@ var cinema = cinemaService.CreateCinema(inputArray[0], rows, seatsPerRow);
 MenuItemOption menuItemOption = MenuItemOption.None;
 while (menuItemOption != MenuItemOption.Exit)
 {
-    Console.WriteLine(CinemaUtility.AppMessage.WelcomeMessage);
-    Console.WriteLine($"[1] Book tickets for {cinema.Movie} ({cinema.AvailableSeats} seats available)");
-    Console.WriteLine("[2] Check bookings");
-    Console.WriteLine("[3] Exit");
-    Console.WriteLine("Please enter your selection:");
+    Console.WriteLine(CinemaUtility.AppMessage.Welcome);
+    Console.WriteLine(CinemaUtility.MenutItem.BookTickets, cinema.Movie,cinema.AvailableSeats);
+    Console.WriteLine(CinemaUtility.MenutItem.CheckBookings);
+    Console.WriteLine(CinemaUtility.MenutItem.Exit);
+    Console.WriteLine(CinemaUtility.AppMessage.EnterSelection);
 
     var menuItemSelection = Console.ReadLine();
     Console.WriteLine();
+    
     if (!Enum.TryParse(menuItemSelection, out menuItemOption)
         || !Enum.GetValues<MenuItemOption>().Contains(menuItemOption))
     {

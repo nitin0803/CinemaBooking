@@ -1,4 +1,5 @@
 ﻿using GicCinema.Models;
+using GicCinema.Utility;
 
 namespace GicCinema.Services;
 
@@ -27,7 +28,7 @@ public class CinemaService : ICinemaService
         }
         catch (Exception)
         {
-            Console.WriteLine("Exception occurred as duplicate booking entries found in cinema");
+            Console.WriteLine(CinemaUtility.ExceptionMessage.DuplicateBookingsFound, bookingId);
             throw;
         }
     }
